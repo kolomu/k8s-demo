@@ -1,9 +1,10 @@
 # README
 
 Sources:
-[1. Creating the referenced Docker Image](https://www.youtube.com/watch?v=3c-iBn73dDE)
-[2. Kubernetes Crash Course for Absolute Beginners](https://www.youtube.com/watch?v=s_o8dwzRlu4)
+- [1. Creating the referenced Docker Image](https://www.youtube.com/watch?v=3c-iBn73dDE)
+- [2. Kubernetes Crash Course for Absolute Beginners](https://www.youtube.com/watch?v=s_o8dwzRlu4)
 
+----
 - mongo-config.yaml see: [ConfigMaps](https://kubernetes.io/docs/concepts/configuration/configmap/)
 - mongo-secret.yaml see: [Secret](https://kubernetes.io/docs/concepts/configuration/secret/)
   - encode value: `echo -n mongouser | base64`
@@ -27,6 +28,7 @@ Sources:
 
 
 **Yaml File**
+
 3 dashes = `---` multiple YAML configuration files within 1 file
 
 **Handling Secrets**
