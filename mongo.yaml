@@ -1,0 +1,47 @@
+# Deployment & Service in 1 File because they belong together
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo-deployment
+  labels: # any component can have a label -> additional identifiers for component
+    app: mongo
+spec:
+  replicas: 1 # how many Pods you want to create? -> for db its better to use `StatefulSet` instead of `Deployment`
+  selector:
+    matchLabels:
+      app: mongo
+  template: # blueprint for the pods
+    metadata: # own metadata & spec
+      labels:
+        app: mongo # app is standard
+    spec: # specification of pod
+      containers: # list of containers in a pod
+      - name: mongodb # 1 main application per pod
+        image: mongo:5.0 # get info here: https://hub.docker.com/_/mongo?tab=tags&page=1&name=5
+        ports:
+        - containerPort: 27017
+        env: # for mongodb user
+        # when mongodb starts a user with specified credentials will be created
+        - name: MONGO_INITDB_ROOT_USERNAME
+          valueFrom: # look in file `mongo-secret.yaml` for user and pw
+            secretKeyRef: 
+              name: mongo-secret
+              key: mongo-user
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          valueFrom: # look in file `mongo-secret.yaml` for user and pw
+            secretKeyRef: 
+              name: mongo-secret
+              key: mongo-password
+---
+# src: https://kubernetes.io/docs/concepts/services-networking/service/
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-service # endpoint which is used to access mongo-db  -> mongo-config.yaml data.mongo-url
+spec:
+  selector: # connecting Service to Pods (service needs to know which endpoint belongs to it and forward request)
+    app: mongo
+  ports:
+    - protocol: TCP
+      port: 27017
+      targetPort: 27017 # port of the Pod, must match containerPort
